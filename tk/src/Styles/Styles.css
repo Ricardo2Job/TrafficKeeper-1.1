@@ -1,0 +1,79 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #e0e0e0;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.road-status {
+  margin-bottom: 20px;
+}
+
+.chart-placeholder {
+  height: 200px;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.map-placeholder {
+  height: 400px;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.road-conditions {
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+.road-conditions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.road-conditions ul li {
+  margin-bottom: 10px;
+}
