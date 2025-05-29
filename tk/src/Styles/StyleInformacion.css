@@ -1,0 +1,12 @@
+.informacion-container {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.informacion-container h1 {
+  color: #9c27b0;
+  margin-bottom: 20px;
+}

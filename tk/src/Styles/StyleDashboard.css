@@ -1,0 +1,23 @@
+.dashboard-content {
+  padding: 20px;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.road-status, .road-conditions {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.road-status h2, .road-conditions h2 {
+  color: #9c27b0;
+}
+
+.map-placeholder {
+  background-color: #1e1e1e;
+  height: 300px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
