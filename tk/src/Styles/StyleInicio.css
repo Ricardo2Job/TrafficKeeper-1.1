@@ -1,7 +1,10 @@
 .inicio {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a0933 0%, #2d1b4e 50%, #1a0933 100%);
+  color: #e0e6ed;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 .main-content {
@@ -9,47 +12,31 @@
   flex: 1;
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #1e1e1e;
-  padding: 20px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin-bottom: 10px;
-}
-
-.sidebar ul li a {
-  color: #e0e0e0;
-  text-decoration: none;
-}
-
 .content {
   flex: 1;
-  padding: 20px;
-  background-color: #121212;
-  color: #e0e0e0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0f0524 0%, #1e0b3d 100%);
 }
 
-.road-status, .road-conditions {
-  background-color: #1e1e1e;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.add-widget {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
 }
 
-.road-status h2, .road-conditions h2 {
-  color: #9c27b0;
+.add-widget-button {
+  background: rgba(139, 92, 246, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.map-placeholder {
-  background-color: #1e1e1e;
-  height: 300px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.add-widget-button:hover {
+  background: rgba(139, 92, 246, 0.8);
 }

@@ -1,7 +1,9 @@
 .dashboard-content {
-  padding: 20px;
   background-color: #121212;
   color: #e0e0e0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .road-status, .road-conditions {

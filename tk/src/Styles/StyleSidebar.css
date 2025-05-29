@@ -1,0 +1,32 @@
+.sidebar {
+  width: 250px;
+  background: rgba(46, 16, 101, 0.8);
+  border-right: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  margin: 0;
+}
+
+.sidebar nav ul li a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: #c4b5fd;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+  color: #ddd6fe;
+  background: rgba(139, 92, 246, 0.2);
+  border-left-color: #8b5cf6;
+  transform: translateX(5px);
+}

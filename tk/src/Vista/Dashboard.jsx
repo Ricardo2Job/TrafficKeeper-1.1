@@ -1,7 +1,7 @@
 import React from 'react';
 import '../Styles/StyleDashboard.css';
 
-const DashboardContent = () => {
+const Dashboard = () => {
   return (
     <div className="dashboard-content">
       <div className="road-status">
@@ -30,4 +30,4 @@ const DashboardContent = () => {
   );
 };
 
-export default DashboardContent;
+export default Dashboard;

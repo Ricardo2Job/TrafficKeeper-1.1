@@ -4,7 +4,7 @@ import '../Styles/StyleFooter.css';
 const Footer = () => {
   return (
     <div className="footer">
-      <p>© 2023 TrafficKeeper. Todos los derechos reservados.</p>
+      <p>© 2025 TrafficKeeper. Todos los derechos reservados.</p>
     </div>
   );
 };

@@ -1,12 +1,47 @@
-.transito-vehicular-container {
-  background-color: #121212;
-  color: #e0e0e0;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.transito-vehicular {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a0933 0%, #2d1b4e 50%, #1a0933 100%);
+  color: #e0e6ed;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
-.transito-vehicular-container h1 {
-  color: #9c27b0;
-  margin-bottom: 20px;
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0f0524 0%, #1e0b3d 100%);
+}
+
+.filters {
+  margin-bottom: 1rem;
+}
+
+.filters select {
+  margin-right: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #8b5cf6;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.trafico-data {
+  background: rgba(46, 16, 101, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.trafico-chart {
+  background: rgba(46, 16, 101, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
 }
