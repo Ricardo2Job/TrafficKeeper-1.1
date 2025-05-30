@@ -1,448 +1,240 @@
-/* ===== ESTILOS PARA REGISTRO DEL CLIMA ===== */
-
-/* Contenedor principal */
-.clima-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Estilos generales */
+.min-h-screen {
   min-height: 100vh;
 }
 
-/* Header personalizado para clima */
-.clima-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+.bg-gray-100 {
+  background-color: #f7fafc;
 }
 
-/* Cards de estaciones meteorológicas */
-.weather-station-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+.flex {
+  display: flex;
 }
 
-.weather-station-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+.flex-1 {
+  flex: 1;
 }
 
-/* Indicadores de estado */
-.status-indicator {
-  position: relative;
-  display: inline-block;
+.p-6 {
+  padding: 1.5rem;
 }
 
-.status-indicator::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
+/* Estilos para el contenido principal */
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
-.status-normal::after {
-  background-color: #10b981;
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
-.status-precaucion::after {
-  background-color: #f59e0b;
+.font-bold {
+  font-weight: 700;
 }
 
-.status-critico::after {
-  background-color: #ef4444;
+.text-gray-800 {
+  color: #1f2937;
 }
 
-/* Animación de pulso para indicadores */
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  }
-  
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
-  }
-  
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
+.text-gray-600 {
+  color: #4b5563;
 }
 
-/* Mapa de ruta */
-.route-map {
-  background: linear-gradient(to bottom, #e0f2fe 0%, #b3e5fc 50%, #81d4fa 100%);
-  position: relative;
-  overflow: hidden;
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
-.route-line {
-  background: linear-gradient(to bottom, #424242, #616161, #424242);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+.text-gray-500 {
+  color: #6b7280;
 }
 
-.route-line::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    #fff 0px,
-    #fff 10px,
-    transparent 10px,
-    transparent 20px
-  );
+/* Estilos para los filtros */
+.bg-white {
+  background-color: #ffffff;
 }
 
-/* Estaciones en el mapa */
-.map-station {
-  z-index: 10;
-  transition: all 0.3s ease;
+.rounded-lg {
+  border-radius: 0.5rem;
 }
 
-.map-station:hover {
-  transform: scale(1.1);
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.map-station-info {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.p-4 {
+  padding: 1rem;
 }
 
-/* Gráficos */
-.chart-container {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
-/* Alertas meteorológicas */
-.weather-alert {
-  animation: slideInLeft 0.5s ease-out;
+.gap-4 {
+  gap: 1rem;
 }
 
-.weather-alert-high {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  border-left: 4px solid #dc2626;
+.border {
+  border-width: 1px;
 }
 
-.weather-alert-medium {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border-left: 4px solid #d97706;
+.rounded {
+  border-radius: 0.25rem;
 }
 
-.weather-alert-low {
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-  border-left: 4px solid #2563eb;
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-/* Barras de progreso personalizadas */
-.progress-bar {
-  background: #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
+/* Estilos para los gráficos */
+.grid {
+  display: grid;
 }
 
-.progress-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.8s ease-in-out;
-  position: relative;
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  animation: shimmer 2s infinite;
+.lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+.gap-6 {
+  gap: 1.5rem;
 }
 
-/* Métricas de impacto */
-.impact-metrics {
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+.w-full {
+  width: 100%;
 }
 
-.metric-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+.h-32 {
+  height: 8rem;
 }
 
-.metric-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+.flex-col {
+  flex-direction: column;
 }
 
-/* Filtros */
-.filter-container {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-}
-
-.filter-select {
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid #e5e7eb;
-  transition: all 0.3s ease;
-}
-
-.filter-select:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Estadísticas generales */
-.stats-card {
-  background: linear-gradient(135deg, #ffffff, #f8fafc);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.stats-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.stats-icon {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .route-map {
-    min-height: 300px;
-  }
-  
-  .map-station-info {
-    font-size: 0.75rem;
-    padding: 0.5rem;
-    min-width: 120px;
-  }
-  
-  .chart-container {
-    padding: 1rem;
-  }
-}
-
-/* Nota de datos de prueba */
-.demo-notice {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1px solid #f59e0b;
-  animation: fadeIn 1s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Efectos de carga para datos en tiempo real */
-.loading-shimmer {
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer-loading 1.5s infinite;
-}
-
-@keyframes shimmer-loading {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-/* Efectos adicionales para elementos interactivos */
-.weather-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.weather-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Indicadores de tiempo real */
-.real-time-indicator {
-  position: relative;
-  display: inline-flex;
+.items-center {
   align-items: center;
 }
 
-.real-time-indicator::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background: #10b981;
-  border-radius: 50%;
-  margin-right: 8px;
-  animation: pulse-dot 2s infinite;
+.space-x-1 {
+  margin-right: 0.25rem;
 }
 
-@keyframes pulse-dot {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.8);
-  }
+.bg-red-500 {
+  background-color: #ef4444;
 }
 
-/* Mejoras para gráficos */
-.chart-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
+.bg-blue-500 {
+  background-color: #3b82f6;
 }
 
-.chart-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b, #ef4444);
-  z-index: 1;
+.bg-green-500 {
+  background-color: #10b981;
 }
 
-/* Estados de conexión */
-.connection-status {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.875rem;
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.transform {
+  transform: rotate(-45deg);
+}
+
+.origin-top-left {
+  transform-origin: top left;
+}
+
+/* Estilos para la tabla */
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.font-medium {
   font-weight: 500;
-  z-index: 1000;
-  transition: all 0.3s ease;
 }
 
-.connection-online {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+.border-t {
+  border-top-width: 1px;
 }
 
-.connection-offline {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
 }
 
-/* Animaciones de entrada para las tarjetas */
-.card-enter {
-  animation: cardEnter 0.6s ease-out forwards;
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
-@keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
-/* Estilos para tooltips personalizados */
-.custom-tooltip {
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+.rounded {
+  border-radius: 0.25rem;
 }
 
-/* Mejoras para accesibilidad */
-.focus-ring:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+.text-white {
+  color: #ffffff;
 }
 
-/* Efectos de hover para elementos clicables */
-.clickable-element {
-  cursor: pointer;
-  transition: all 0.2s ease;
+.bg-green-500 {
+  background-color: #10b981;
 }
 
-.clickable-element:hover {
-  opacity: 0.8;
+.bg-yellow-500 {
+  background-color: #eab308;
 }
 
-.clickable-element:active {
-  transform: scale(0.98);
+.bg-red-500 {
+  background-color: #ef4444;
 }
 
-/* Estilos para modo oscuro (opcional) */
-@media (prefers-color-scheme: dark) {
-  .clima-container {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  }
-  
-  .weather-station-card {
-    background: rgba(30, 41, 59, 0.9);
-    color: #f1f5f9;
-  }
-  
-  .stats-card {
-    background: linear-gradient(135deg, #1e293b, #334155);
-    color: #f1f5f9;
-  }
+/* Estilos para los iconos del clima */
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-yellow-500 {
+  color: #eab308;
 }
