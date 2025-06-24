@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficKeeper - Registro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input:hover, .form-group select:hover {
+            border-color: #cbd5e0;
+        }
+        
+        .form-group.half {
+            width: 48%;
+            display: inline-block;
+        }
+        
+        .form-group.half:first-child {
+            margin-right: 4%;
+        }
+        
+        .btn-register {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-register:active {
+            transform: translateY(0);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #718096;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .features h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .features ul {
+            list-style: none;
+            color: #718096;
+        }
+        
+        .features li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <h1>TrafficKeeper</h1>
+            <p>Plataforma de Análisis de Datos de Tráfico</p>
+        </div>
+        
+        <form id="registerForm">
+            <div class="form-group half">
+                <label for="firstName">Nombre</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Ingresa tu nombre" required>
+            </div>
+            
+            <div class="form-group half">
+                <label for="lastName">Apellido</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Ingresa tu apellido" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="organization">Organización</label>
+                <input type="text" id="organization" name="organization" placeholder="Nombre de tu organización" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Rol</label>
+                <select id="role" name="role" required>
+                    <option value="">Selecciona tu rol</option>
+                    <option value="gestor_vial">Gestor Vial</option>
+                    <option value="desarrollador">Desarrollador</option>
+                    <option value="analista">Analista de Datos</option>
+                    <option value="administrador">Administrador de Sistema</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirma tu contraseña" required>
+            </div>
+            
+            <button type="submit" class="btn-register">Registrar Cuenta</button>
+        </form>
+        
+        <div class="features">
+            <h3>Acceso a todas las funcionalidades:</h3>
+            <ul>
+                <li>Dashboard de monitoreo en tiempo real</li>
+                <li>Sistema de alertas automáticas</li>
+                <li>Recomendaciones inteligentes</li>
+                <li>Plataforma de simulación de datos</li>
+                <li>Informes detallados y exportación</li>
+            </ul>
+        </div>
+        
+        <div class="login-link">
+            <p>¿Ya tienes una cuenta? <a href="#" onclick="showLogin()">Iniciar sesión</a></p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+            
+            // Simular registro exitoso
+            alert('¡Registro exitoso! Redirigiendo al dashboard...');
+            setTimeout(() => {
+                // Aquí normalmente redirigiríamos al dashboard
+                console.log('Redirecting to dashboard...');
+            }, 1000);
+        });
+        
+        function showLogin() {
+            alert('Funcionalidad de inicio de sesión - Demo');
+        }
+        
+        // Animación suave para los inputs
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

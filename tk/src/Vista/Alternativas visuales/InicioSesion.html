@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficKeeper - Iniciar Sesión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-msg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input:hover {
+            border-color: #cbd5e0;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #718096;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+        }
+        
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .btn-demo {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .btn-demo:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #667eea;
+        }
+        
+        .register-link {
+            text-align: center;
+            color: #718096;
+        }
+        
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .user-profiles {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-profiles h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .profile-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #667eea;
+        }
+        
+        .profile-btn:last-child {
+            margin-bottom: 0;
+        }
+        
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .success-message {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>TrafficKeeper</h1>
+            <p>Plataforma de Análisis de Datos de Tráfico</p>
+        </div>
+        
+        <div class="welcome-msg">
+            Bienvenido de vuelta, accede a tu panel de control
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            Credenciales incorrectas. Por favor, intenta nuevamente.
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            Inicio de sesión exitoso. Redirigiendo...
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+            </div>
+            
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    Recordarme
+                </label>
+                <a href="#" class="forgot-password" onclick="showForgotPassword()">¿Olvidaste tu contraseña?</a>
+            </div>
+            
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+        
+        <button class="btn-demo" onclick="demoLogin()">Acceso Demo - Gestor Vial</button>
+        
+        <div class="user-profiles">
+            <h3>Perfiles de Usuario Demo:</h3>
+            <button class="profile-btn" onclick="loginAs('gestor')">👨‍💼 Gestor Vial - admin@traffic.com</button>
+            <button class="profile-btn" onclick="loginAs('desarrollador')">👨‍💻 Desarrollador - dev@traffic.com</button>
+            <button class="profile-btn" onclick="loginAs('analista')">📊 Analista - analyst@traffic.com</button>
+        </div>
+        
+        <div class="register-link">
+            <p>¿No tienes una cuenta? <a href="#" onclick="showRegister()">Regístrate aquí</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // Usuarios demo
+        const demoUsers = {
+            'admin@traffic.com': { password: 'admin123', role: 'Gestor Vial' },
+            'dev@traffic.com': { password: 'dev123', role: 'Desarrollador' },
+            'analyst@traffic.com': { password: 'analyst123', role: 'Analista' }
+        };
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+            
+            // Ocultar mensajes previos
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Validar credenciales
+            if (demoUsers[email] && demoUsers[email].password === password) {
+                successMsg.style.display = 'block';
+                successMsg.textContent = `Bienvenido ${demoUsers[email].role}! Redirigiendo al dashboard...`;
+                
+                // Simular redirección
+                setTimeout(() => {
+                    console.log('Redirecting to dashboard...');
+                    alert('Redirigiendo al dashboard principal...');
+                }, 1500);
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        });
+        
+        function loginAs(userType) {
+            const credentials = {
+                'gestor': { email: 'admin@traffic.com', password: 'admin123' },
+                'desarrollador': { email: 'dev@traffic.com', password: 'dev123' },
+                'analista': { email: 'analyst@traffic.com', password: 'analyst123' }
+            };
+            
+            document.getElementById('email').value = credentials[userType].email;
+            document.getElementById('password').value = credentials[userType].password;
+        }
+        
+        function demoLogin() {
+            document.getElementById('email').value = 'admin@traffic.com';
+            document.getElementById('password').value = 'admin123';
+            
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+            successMsg.textContent = 'Accediendo como Gestor Vial Demo...';
+            
+            setTimeout(() => {
+                alert('Bienvenido al Dashboard de TrafficKeeper!');
+            }, 1000);
+        }
+        
+        function showForgotPassword() {
+            alert('Funcionalidad de recuperación de contraseña - Demo\n\nCredenciales de prueba:\n- admin@traffic.com / admin123\n- dev@traffic.com / dev123\n- analyst@traffic.com / analyst123');
+        }
+        
+        function showRegister() {
+            alert('Funcionalidad de registro - Demo');
+        }
+        
+        // Animaciones para inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+import React, { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { AlertTriangle, CheckCircle, XCircle, Activity, Car, Construction, MapPin } from 'lucide-react';
+
+const Dashboard = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Datos simulados para el dashboard
+  const roadStatus = [
+    { name: 'Ruta 5 Norte', status: 'normal', incidents: 2, traffic: 75, condition: 'Buena' },
+    { name: 'Ruta 68', status: 'warning', incidents: 5, traffic: 90, condition: 'Regular' },
+    { name: 'Ruta 78', status: 'critical', incidents: 8, traffic: 95, condition: 'Mala' },
+    { name: 'Ruta 5 Sur', status: 'normal', incidents: 1, traffic: 65, condition: 'Buena' },
+    { name: 'Autopista Central', status: 'warning', incidents: 3, traffic: 85, condition: 'Regular' },
+    { name: 'Costanera Norte', status: 'normal', incidents: 0, traffic: 55, condition: 'Excelente' }
+  ];
+
+  const trafficData = [
+    { hour: '06:00', vehicles: 800 },
+    { hour: '07:00', vehicles: 1200 },
+    { hour: '08:00', vehicles: 1800 },
+    { hour: '09:00', vehicles: 1500 },
+    { hour: '10:00', vehicles: 1100 },
+    { hour: '11:00', vehicles: 1300 },
+    { hour: '12:00', vehicles: 1600 }
+  ];
+
+  const incidentTypes = [
+    { name: 'Accidentes', value: 8, color: '#ef4444' },
+    { name: 'Obras', value: 12, color: '#f59e0b' },
+    { name: 'Congestión', value: 15, color: '#eab308' },
+    { name: 'Clima', value: 3, color: '#3b82f6' }
+  ];
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'normal':
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+      case 'critical':
+        return <XCircle className="w-5 h-5 text-red-500" />;
+      default:
+        return <Activity className="w-5 h-5 text-gray-500" />;
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'normal':
+        return 'bg-green-100 border-green-300';
+      case 'warning':
+        return 'bg-yellow-100 border-yellow-300';
+      case 'critical':
+        return 'bg-red-100 border-red-300';
+      default:
+        return 'bg-gray-100 border-gray-300';
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 text-white">
+      {/* Sidebar */}
+      <div className="fixed left-0 top-0 h-full w-64 bg-purple-900 bg-opacity-80 backdrop-blur-sm">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-8">TrafficKeeper</h1>
+          <nav className="space-y-4">
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Inicio</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Alertas</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Predicciones</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Registro del Clima</div>
+            <div className="bg-purple-700 text-white p-2 rounded font-semibold">Dashboard</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Tránsito Vehicular</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Software</div>
+            <div className="text-purple-300 hover:text-white cursor-pointer p-2 rounded">Información</div>
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="ml-64 p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-bold">Dashboard de Control</h2>
+            <p className="text-purple-300 mt-2">Monitoreo en tiempo real del estado de carreteras</p>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-purple-300">Última actualización</div>
+            <div className="text-lg font-semibold">{currentTime.toLocaleTimeString()}</div>
+          </div>
+        </div>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-purple-300 border-opacity-30">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-300 text-sm">Total Carreteras</p>
+                <p className="text-3xl font-bold">6</p>
+              </div>
+              <MapPin className="w-8 h-8 text-purple-400" />
+            </div>
+          </div>
+          
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-green-300 border-opacity-30">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-green-300 text-sm">Estado Normal</p>
+                <p className="text-3xl font-bold text-green-400">3</p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-400" />
+            </div>
+          </div>
+          
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-yellow-300 border-opacity-30">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-yellow-300 text-sm">Advertencias</p>
+                <p className="text-3xl font-bold text-yellow-400">2</p>
+              </div>
+              <AlertTriangle className="w-8 h-8 text-yellow-400" />
+            </div>
+          </div>
+          
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-red-300 border-opacity-30">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-red-300 text-sm">Estado Crítico</p>
+                <p className="text-3xl font-bold text-red-400">1</p>
+              </div>
+              <XCircle className="w-8 h-8 text-red-400" />
+            </div>
+          </div>
+        </div>
+
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Road Status List */}
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-purple-300 border-opacity-30">
+            <h3 className="text-xl font-bold mb-6 flex items-center">
+              <Activity className="w-5 h-5 mr-2" />
+              Estado de Carreteras
+            </h3>
+            <div className="space-y-4">
+              {roadStatus.map((road, index) => (
+                <div key={index} className={`p-4 rounded-lg border-2 ${getStatusColor(road.status)} bg-opacity-20`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      {getStatusIcon(road.status)}
+                      <div>
+                        <p className="font-semibold text-white">{road.name}</p>
+                        <p className="text-sm text-purple-300">Condición: {road.condition}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-purple-300">Tráfico: {road.traffic}%</p>
+                      <p className="text-sm text-purple-300">Incidentes: {road.incidents}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Traffic Chart */}
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-purple-300 border-opacity-30">
+            <h3 className="text-xl font-bold mb-6 flex items-center">
+              <Car className="w-5 h-5 mr-2" />
+              Flujo de Tráfico por Hora
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={trafficData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="hour" tick={{fill: 'white', fontSize: 12}} />
+                <YAxis tick={{fill: 'white', fontSize: 12}} />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'rgba(139, 92, 246, 0.9)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: 'white'
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="vehicles" 
+                  stroke="#8b5cf6" 
+                  strokeWidth={3}
+                  dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Bottom Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Incident Types */}
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-purple-300 border-opacity-30">
+            <h3 className="text-xl font-bold mb-6 flex items-center">
+              <Construction className="w-5 h-5 mr-2" />
+              Tipos de Incidentes
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={incidentTypes}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({name, value}) => `${name}: ${value}`}
+                >
+                  {incidentTypes.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'rgba(139, 92, 246, 0.9)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: 'white'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Traffic by Road */}
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-purple-300 border-opacity-30">
+            <h3 className="text-xl font-bold mb-6">Nivel de Tráfico por Carretera</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={roadStatus}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{fill: 'white', fontSize: 10}} 
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                />
+                <YAxis tick={{fill: 'white', fontSize: 12}} />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'rgba(139, 92, 246, 0.9)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: 'white'
+                  }}
+                />
+                <Bar dataKey="traffic" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-purple-300">
+          <p>© 2025 TrafficKeeper. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;

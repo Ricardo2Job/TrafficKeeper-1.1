@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficKeeper - Generación de Informes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 0 2rem 3rem;
+        }
+
+        .nav-item {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: #4CAF50;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .controls-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .controls-title {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+            transform: scale(1.2);
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .report-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .report-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .icon-daily {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .icon-weekly {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+        }
+
+        .icon-monthly {
+            background: linear-gradient(45deg, #A8E6CF, #7FB069);
+        }
+
+        .icon-custom {
+            background: linear-gradient(45deg, #C7CEEA, #9B59B6);
+        }
+
+        .report-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .report-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .report-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-stat-number {
+            color: white;
+            font-size: 2.2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">TrafficKeeper</div>
+        <a href="#" class="nav-item">Inicio</a>
+        <a href="#" class="nav-item">Alertas</a>
+        <a href="#" class="nav-item">Predicciones</a>
+        <a href="#" class="nav-item">Registro del Clima</a>
+        <a href="#" class="nav-item">Dashboard</a>
+        <a href="#" class="nav-item">Tránsito Vehicular</a>
+        <a href="#" class="nav-item active">Informes</a>
+        <a href="#" class="nav-item">Software</a>
+        <a href="#" class="nav-item">Información</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>📋 Generación de Informes</h1>
+            <p>Informes detallados sobre el estado de carreteras y análisis de patrones de tráfico</p>
+        </div>
+
+        <div class="quick-stats">
+            <div class="quick-stat-card">
+                <span class="quick-stat-number">156</span>
+                <div class="quick-stat-label">Informes Generados</div>
+            </div>
+            <div class="quick-stat-card">
+                <span class="quick-stat-number">24</span>
+                <div class="quick-stat-label">Informes Este Mes</div>
+            </div>
+            <div class="quick-stat-card">
+                <span class="quick-stat-number">6</span>
+                <div class="quick-stat-label">Rutas Monitoreadas</div>
+            </div>
+            <div class="quick-stat-card">
+                <span class="quick-stat-number">98%</span>
+                <div class="quick-stat-label">Disponibilidad de Datos</div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-title">
+                ⚙️ Configuración de Informes
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Tipo de Informe</label>
+                    <select class="form-select">
+                        <option>Informe Diario</option>
+                        <option>Informe Semanal</option>
+                        <option>Informe Mensual</option>
+                        <option>Informe Personalizado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Rango de Fechas</label>
+                    <input type="date" class="form-input" value="2024-06-01">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" class="form-input" value="2024-06-14">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Formato de Salida</label>
+                    <select class="form-select">
+                        <option>PDF</option>
+                        <option>Excel</option>
+                        <option>CSV</option>
+                        <option>JSON</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Rutas a Incluir</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked> Ruta 5 Norte
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked> Ruta 68
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox"> Ruta 78
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked> Ruta 5 Sur
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox"> Autopista Central
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked> Costanera Norte
+                    </div>
+                </div>
+            </div>
+            
+            <button class="generate-btn">🔄 Generar Informe</button>
+        </div>
+
+        <div class="reports-grid">
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon icon-daily">📈</div>
+                    <div>
+                        <div class="report-title">Informe Diario</div>
+                        <div class="report-subtitle">14 de Junio, 2024</div>
+                    </div>
+                </div>
+                <div class="report-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">89%</span>
+                        <div class="stat-label">Flujo Promedio</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <div class="stat-label">Incidentes</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3.2</span>
+                        <div class="stat-label">Tiempo Promedio</div>
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="btn btn-primary">Descargar</button>
+                    <button class="btn btn-secondary">Ver Detalle</button>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon icon-weekly">📊</div>
+                    <div>
+                        <div class="report-title">Informe Semanal</div>
+                        <div class="report-subtitle">8-14 Junio, 2024</div>
+                    </div>
+                </div>
+                <div class="report-stats">

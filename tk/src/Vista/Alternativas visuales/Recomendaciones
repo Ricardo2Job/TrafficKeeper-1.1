@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficKeeper - Recomendaciones Automatizadas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 0 2rem 3rem;
+        }
+
+        .nav-item {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: #4CAF50;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .recommendation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .priority-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .priority-alta {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .priority-media {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+        }
+
+        .priority-baja {
+            background: linear-gradient(45deg, #48dbfb, #0abde3);
+            color: white;
+        }
+
+        .recommendation-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .icon-traffic {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .icon-route {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .icon-maintenance {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .icon-weather {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        .recommendation-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .prediction-summary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .summary-title {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">TrafficKeeper</div>
+        <a href="#" class="nav-item">Inicio</a>
+        <a href="#" class="nav-item">Alertas</a>
+        <a href="#" class="nav-item">Predicciones</a>
+        <a href="#" class="nav-item active">Recomendaciones</a>
+        <a href="#" class="nav-item">Registro del Clima</a>
+        <a href="#" class="nav-item">Dashboard</a>
+        <a href="#" class="nav-item">Tránsito Vehicular</a>
+        <a href="#" class="nav-item">Software</a>
+        <a href="#" class="nav-item">Información</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>🤖 Recomendaciones Automatizadas</h1>
+            <p>Sistema inteligente de recomendaciones basado en predicciones de tráfico y patrones históricos</p>
+        </div>
+
+        <div class="prediction-summary">
+            <div class="summary-title">
+                📊 Resumen de Predicciones
+            </div>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-number">12</span>
+                    <div class="stat-label">Recomendaciones Activas</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <div class="stat-label">Precisión del Sistema</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <div class="stat-label">Alertas Críticas</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24h</span>
+                    <div class="stat-label">Horizonte de Predicción</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recommendations-grid">
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-traffic">🚦</div>
+                    <div class="priority-badge priority-alta">ALTA</div>
+                </div>
+                <div class="recommendation-title">Reasignación de Recursos - Ruta 78</div>
+                <div class="recommendation-description">
+                    Se predice un aumento del 40% en el tráfico para las próximas 2 horas debido a evento deportivo. Se recomienda desplegar 2 unidades adicionales de control de tráfico.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Aplicar</button>
+                    <button class="btn btn-secondary">Ver Detalles</button>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-route">🛣️</div>
+                    <div class="priority-badge priority-media">MEDIA</div>
+                </div>
+                <div class="recommendation-title">Ruta Alternativa - Autopista Central</div>
+                <div class="recommendation-description">
+                    Condiciones climáticas adversas detectadas. Se sugiere activar señalización de rutas alternativas hacia Costanera Norte para reducir congestión en 25%.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Aplicar</button>
+                    <button class="btn btn-secondary">Ver Detalles</button>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-maintenance">🔧</div>
+                    <div class="priority-badge priority-baja">BAJA</div>
+                </div>
+                <div class="recommendation-title">Mantenimiento Preventivo</div>
+                <div class="recommendation-description">
+                    Los sensores de la Ruta 5 Norte muestran degradación en la precisión. Se recomienda programar mantenimiento para el próximo fin de semana.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Programar</button>
+                    <button class="btn btn-secondary">Ver Detalles</button>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-weather">🌧️</div>
+                    <div class="priority-badge priority-alta">ALTA</div>
+                </div>
+                <div class="recommendation-title">Alerta Meteorológica</div>
+                <div class="recommendation-description">
+                    Se pronostica lluvia intensa para las próximas 4 horas. Activar protocolos de seguridad y reducir límites de velocidad en un 20% en todas las rutas.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Activar Protocolo</button>
+                    <button class="btn btn-secondary">Ver Detalles</button>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-traffic">📈</div>
+                    <div class="priority-badge priority-media">MEDIA</div>
+                </div>
+                <div class="recommendation-title">Optimización de Semáforos</div>
+                <div class="recommendation-description">
+                    El análisis de patrones sugiere ajustar los tiempos de semáforos en el sector centro entre 17:00-19:00 para mejorar flujo vehicular en 15%.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Optimizar</button>
+                    <button class="btn btn-secondary">Simular</button>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="recommendation-header">
+                    <div class="recommendation-icon icon-route">🚛</div>
+                    <div class="priority-badge priority-baja">BAJA</div>
+                </div>
+                <div class="recommendation-title">Control de Carga Pesada</div>
+                <div class="recommendation-description">
+                    Se detecta aumento en tráfico de carga pesada en Ruta 68. Considerar implementar restricciones horarias entre 07:00-09:00 para reducir congestión.
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-primary">Evaluar</button>
+                    <button class="btn btn-secondary">Ver Análisis</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
