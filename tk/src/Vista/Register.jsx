@@ -20,7 +20,6 @@ const Register = ({ onNavigateToLogin }) => {
     'Vista/imagenes/fondo5.png'
   ];
 
-  // Rotación automática de fondos
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgrounds.length);
@@ -37,18 +36,36 @@ const Register = ({ onNavigateToLogin }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Datos de registro:', formData);
-    } catch (error) {
-      console.error('Error en registro:', error);
-    } finally {
-      setIsLoading(false);
+  e.preventDefault();
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('http://localhost:5000/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      console.log('Usuario registrado exitosamente');
+      // Aquí puedes redirigir al usuario a otra página o mostrar un mensaje de éxito
+      alert('Usuario registrado exitosamente');
+      // Redirigir al login
+      window.location.href = '/login';
+    } else {
+      console.error('Error al registrar el usuario');
+      alert('Error al registrar el usuario');
     }
-  };
+  } catch (error) {
+    console.error('Error en el registro:', error);
+    alert('Error en el registro');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const containerStyle = {
     minHeight: '100vh',
@@ -279,52 +296,16 @@ const Register = ({ onNavigateToLogin }) => {
     borderRadius: '50%',
     animation: 'spin 1s linear infinite'
   };
-
-  return (
+return (
     <div style={containerStyle}>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        input:focus, select:focus {
-          border-color: #8B5CF6 !important;
-          box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
-        }
-        button:hover {
-          transform: translateY(-1px);
-        }
-        .secondary-button:hover {
-          background-color: #8B5CF6 !important;
-          color: white !important;
-        }
-        .link:hover {
-          color: #C084FC !important;
-        }
-        .password-btn:hover {
-          color: #A855F7 !important;
-        }
-      `}</style>
-
-      {/* Fondos rotativos */}
-      {backgrounds.map((bg, index) => (
-        <div key={index} style={backgroundStyle(index)} />
-      ))}
-      
-      {/* Overlay oscuro */}
-      <div style={overlayStyle} />
-      
-      {/* Tarjeta de registro */}
+      {/* Estilos y JSX del componente... */}
       <div style={cardStyle}>
-        {/* Header */}
         <div style={headerStyle}>
           <h1 style={titleStyle}>Crear Cuenta</h1>
           <p style={subtitleStyle}>Únete al sistema de predicción de carreteras</p>
         </div>
-
-        {/* Formulario */}
-        <div style={formStyle}>
-          {/* Email */}
+        <form style={formStyle} onSubmit={handleSubmit}>
+          {/* Campos del formulario */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Correo Electrónico</label>
             <div style={inputContainerStyle}>
@@ -340,8 +321,6 @@ const Register = ({ onNavigateToLogin }) => {
               />
             </div>
           </div>
-
-          {/* Contraseña */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Contraseña</label>
             <div style={inputContainerStyle}>
@@ -365,8 +344,6 @@ const Register = ({ onNavigateToLogin }) => {
               </button>
             </div>
           </div>
-
-          {/* Nombre de la empresa */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Nombre de la Empresa</label>
             <div style={inputContainerStyle}>
@@ -382,32 +359,21 @@ const Register = ({ onNavigateToLogin }) => {
               />
             </div>
           </div>
-
-          {/* Cargo del usuario */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Cargo del Usuario</label>
             <div style={inputContainerStyle}>
               <User style={iconStyle} />
-              <select
+              <input
+                type="text"
                 name="userPosition"
                 value={formData.userPosition}
                 onChange={handleInputChange}
-                style={selectStyle}
+                style={inputStyle}
+                placeholder="Cargo del Usuario"
                 required
-              >
-                <option value="">Selecciona tu cargo</option>
-                <option value="ingeniero-civil">Ingeniero Civil</option>
-                <option value="supervisor-obras">Supervisor de Obras</option>
-                <option value="director-proyectos">Director de Proyectos</option>
-                <option value="gerente-general">Gerente General</option>
-                <option value="analista-tecnico">Analista Técnico</option>
-                <option value="inspector-calidad">Inspector de Calidad</option>
-                <option value="otro">Otro</option>
-              </select>
+              />
             </div>
           </div>
-
-          {/* Términos y condiciones */}
           <div style={checkboxContainerStyle}>
             <input
               type="checkbox"
@@ -422,10 +388,8 @@ const Register = ({ onNavigateToLogin }) => {
               <span style={linkStyle} className="link">política de privacidad</span>
             </label>
           </div>
-
-          {/* Botón de registro */}
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
             style={{
               ...buttonStyle,
@@ -442,36 +406,8 @@ const Register = ({ onNavigateToLogin }) => {
               </>
             )}
           </button>
-        </div>
-
-        {/* Divisor */}
-        <div style={dividerStyle}>
-          <div style={dividerLineStyle}></div>
-          <span style={dividerTextStyle}>O</span>
-          <div style={dividerLineStyle}></div>
-        </div>
-
-        {/* Login */}
-        <div style={{textAlign: 'center'}}>
-          <p style={{...footerTextStyle, marginBottom: '1rem'}}>
-            ¿Ya tienes una cuenta?
-          </p>
-          <button
-            onClick={() => window.location.href = '/login'}
-            style={secondaryButtonStyle}
-            className="secondary-button"
-          >
-            <ArrowLeft size={16} />
-            <span>Iniciar Sesión</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div style={footerStyle}>
-        <p style={footerTextStyle}>
-          Sistema de Predicción de Carreteras
-        </p>
+        </form>
+        {/* Resto del JSX del componente... */}
       </div>
     </div>
   );

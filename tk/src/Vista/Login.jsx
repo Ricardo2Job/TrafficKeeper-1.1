@@ -36,12 +36,29 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Datos de login:', formData);
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login exitoso:', data);
+        alert('Login exitoso');
+        // Redirigir a la página principal o dashboard
+        window.location.href = '/dashboard'; // Cambia esto según tu estructura de rutas
+      } else {
+        const errorData = await response.json();
+        console.error('Credenciales incorrectas:', errorData);
+        alert('Credenciales incorrectas');
+      }
     } catch (error) {
-      console.error('Error en login:', error);
+      console.error('Error en el login:', error);
+      alert('Error en el login');
     } finally {
       setIsLoading(false);
     }
@@ -277,15 +294,12 @@ const Login = () => {
           color: #A855F7 !important;
         }
       `}</style>
-
       {/* Fondos rotativos */}
       {backgrounds.map((bg, index) => (
         <div key={index} style={backgroundStyle(index)} />
       ))}
-
       {/* Overlay oscuro */}
       <div style={overlayStyle} />
-
       {/* Tarjeta de login */}
       <div style={cardStyle}>
         {/* Header */}
@@ -293,9 +307,8 @@ const Login = () => {
           <h1 style={titleStyle}>Bienvenido</h1>
           <p style={subtitleStyle}>Ingresa a tu cuenta para continuar</p>
         </div>
-
         {/* Formulario */}
-        <div style={formStyle}>
+        <form style={formStyle} onSubmit={handleSubmit}>
           {/* Email */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Correo Electrónico</label>
@@ -312,7 +325,6 @@ const Login = () => {
               />
             </div>
           </div>
-
           {/* Contraseña */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Contraseña</label>
@@ -337,7 +349,6 @@ const Login = () => {
               </button>
             </div>
           </div>
-
           {/* Olvidé mi contraseña */}
           <div style={forgotPasswordStyle}>
             <button
@@ -348,10 +359,9 @@ const Login = () => {
               ¿Olvidaste tu contraseña?
             </button>
           </div>
-
           {/* Botón de login */}
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
             style={{
               ...buttonStyle,
@@ -368,15 +378,13 @@ const Login = () => {
               </>
             )}
           </button>
-        </div>
-
+        </form>
         {/* Divisor */}
         <div style={dividerStyle}>
           <div style={dividerLineStyle}></div>
           <span style={dividerTextStyle}>O</span>
           <div style={dividerLineStyle}></div>
         </div>
-
         {/* Registro */}
         <div style={{textAlign: 'center'}}>
           <p style={{...footerTextStyle, marginBottom: '1rem'}}>
@@ -391,7 +399,6 @@ const Login = () => {
           </button>
         </div>
       </div>
-
       {/* Footer */}
       <div style={footerStyle}>
         <p style={footerTextStyle}>

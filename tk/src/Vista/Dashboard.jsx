@@ -20,11 +20,6 @@ import Inicio from './Inicio';
 import Clima from './Clima';
 import Mapa from './Mapa';
 import FlujoVehicular from './FlujoVehicular';
-import Alertas from './Alertas';
-import SimulacionDatos from './SimulacionDatos';
-import MasInformacion from './MasInformacion';
-import Perfil from './Perfil';
-import Configuracion from './Configuracion';
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
