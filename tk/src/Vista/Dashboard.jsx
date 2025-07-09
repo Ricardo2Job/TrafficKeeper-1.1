@@ -20,6 +20,11 @@ import Inicio from './Inicio';
 import Clima from './Clima';
 import Mapa from './Mapa';
 import FlujoVehicular from './FlujoVehicular';
+import Alertas from './Alertas';
+import MasInformacion from './MasInformacion';
+import Perfil from './Perfil';
+import Configuracion from './Configuracion';
+import SimulacionDeDatos from './SimulacionDeDatos'; // Asegúrate de que la ruta sea correcta
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
@@ -69,7 +74,6 @@ const Dashboard = () => {
     'Vista/imagenes/fondo5.png'
   ];
 
-  // Rotación automática de fondos
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgrounds.length);
@@ -109,7 +113,6 @@ const Dashboard = () => {
     }));
   };
 
-  // Estilos principales
   const containerStyle = {
     minHeight: '100vh',
     position: 'relative',
@@ -246,7 +249,7 @@ const Dashboard = () => {
       case 'alertas':
         return <Alertas {...commonProps} />;
       case 'simulacion':
-        return <SimulacionDatos {...commonProps} />;
+        return <SimulacionDeDatos {...commonProps} />; // Asegúrate de que este nombre coincida
       case 'info':
         return <MasInformacion {...commonProps} />;
       case 'perfil':
@@ -265,21 +268,17 @@ const Dashboard = () => {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.8; }
         }
-
         .menu-item:hover {
           background-color: rgba(139, 92, 246, 0.1) !important;
           border-color: rgba(139, 92, 246, 0.3) !important;
         }
-
         button:hover {
           transform: translateY(-1px) !important;
         }
-
         .stat-card:hover {
           transform: translateY(-2px) !important;
           border-color: rgba(139, 92, 246, 0.4) !important;
         }
-
         input:focus, select:focus {
           outline: none;
           border-color: #8B5CF6;
