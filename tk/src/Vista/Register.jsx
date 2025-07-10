@@ -1,3 +1,4 @@
+//register.jsx
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, Building, User, ArrowRight, ArrowLeft } from 'lucide-react';
 
