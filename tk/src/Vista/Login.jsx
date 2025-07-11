@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const backgrounds = [
     'Vista/imagenes/fondo1.png',
@@ -48,17 +50,25 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login exitoso:', data);
+        
+        // Guardar el token y datos del usuario en localStorage
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        
+        // Opcional: también puedes guardar en sessionStorage si prefieres que expire al cerrar el navegador
+        // sessionStorage.setItem('token', data.token);
+        // sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
+        
         alert('Login exitoso');
-        // Redirigir a la página principal o dashboard
-        window.location.href = '/dashboard'; // Cambia esto según tu estructura de rutas
+        navigate('/dashboard'); // Redirigir al dashboard
       } else {
         const errorData = await response.json();
         console.error('Credenciales incorrectas:', errorData);
-        alert('Credenciales incorrectas');
+        alert('Credenciales incorrectas: ' + errorData.error);
       }
     } catch (error) {
       console.error('Error en el login:', error);
-      alert('Error en el login');
+      alert('Error en el login: ' + error.message);
     } finally {
       setIsLoading(false);
     }

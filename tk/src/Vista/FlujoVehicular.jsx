@@ -1,75 +1,228 @@
 import React, { useState, useEffect } from 'react';
-import { Car, Truck, Bus, TrendingUp, TrendingDown, Activity, Clock, BarChart3, PieChart, MapPin, AlertTriangle, RefreshCw, Bike } from 'lucide-react';
+import { Car, Truck, Bus, TrendingUp, TrendingDown, Activity, Clock, BarChart3, PieChart, MapPin, AlertTriangle, RefreshCw, Bike, Calendar } from 'lucide-react';
 
 const FlujoVehicular = ({ profileData, configData }) => {
+  const [datosTrafico, setDatosTrafico] = useState([]);
+  const [datosClima, setDatosClima] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTimeRange, setSelectedTimeRange] = useState('today');
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [fechaInicio, setFechaInicio] = useState(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+  const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0]);
+
+  // Datos calculados dinámicamente
   const [vehicleData, setVehicleData] = useState({
-    total: 12547,
-    cars: 8934,
-    trucks: 1876,
-    buses: 543,
-    motorcycles: 1194,
-    hourlyFlow: 2341,
+    total: 0,
+    cars: 0,
+    trucks: 0,
+    buses: 0,
+    motorcycles: 0,
+    hourlyFlow: 0,
     trend: 'up',
-    percentage: 12.5
+    percentage: 0
   });
 
-  const [hourlyData, setHourlyData] = useState([
-    { hour: '00:00', count: 234, peak: false },
-    { hour: '06:00', count: 1567, peak: true },
-    { hour: '12:00', count: 2341, peak: true },
-    { hour: '18:00', count: 2876, peak: true },
-    { hour: '24:00', count: 456, peak: false }
-  ]);
+  const [hourlyData, setHourlyData] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [realTimeData, setRealTimeData] = useState([]);
 
-  const [zones, setZones] = useState([
-    { id: 1, name: 'Zona Centro', vehicles: 3245, capacity: 4000, percentage: 81 },
-    { id: 2, name: 'Zona Norte', vehicles: 2156, capacity: 3000, percentage: 72 },
-    { id: 3, name: 'Zona Sur', vehicles: 1876, capacity: 2500, percentage: 75 },
-    { id: 4, name: 'Zona Este', vehicles: 3421, capacity: 4500, percentage: 76 },
-    { id: 5, name: 'Zona Oeste', vehicles: 1849, capacity: 2200, percentage: 84 }
-  ]);
+  useEffect(() => {
+    cargarDatos();
+  }, [fechaInicio, fechaFin, selectedTimeRange]);
 
-  const [realTimeData, setRealTimeData] = useState([
-    { street: 'Av. Principal', flow: 145, speed: 35, status: 'normal' },
-    { street: 'Calle Central', flow: 89, speed: 25, status: 'slow' },
-    { street: 'Av. Libertador', flow: 203, speed: 45, status: 'fast' },
-    { street: 'Calle 5', flow: 67, speed: 15, status: 'congested' },
-    { street: 'Av. San Martín', flow: 134, speed: 40, status: 'normal' },
-    { street: 'Calle Norte', flow: 78, speed: 20, status: 'slow' }
-  ]);
-
-  const [selectedTimeRange, setSelectedTimeRange] = useState('today');
-  const [isLoading, setIsLoading] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-
-  // Simulación de actualización automática
   useEffect(() => {
     const interval = setInterval(() => {
-      if (configData?.dashboard?.actualizacionAuto) {
-        updateRealTimeData();
-      }
-    }, (configData?.dashboard?.intervaloActualizacion || 30) * 1000);
+      cargarDatos();
+    }, 30000); // Actualizar cada 30 segundos
 
     return () => clearInterval(interval);
-  }, [configData]);
+  }, [fechaInicio, fechaFin]);
 
-  const updateRealTimeData = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setRealTimeData(prev => prev.map(item => ({
-        ...item,
-        flow: Math.floor(Math.random() * 200) + 50,
-        speed: Math.floor(Math.random() * 40) + 15,
-        status: getRandomStatus()
-      })));
+  const cargarDatos = async () => {
+    try {
+      setLoading(true);
+      const [traficoRes, climaRes] = await Promise.all([
+        fetch('http://localhost:5000/api/simulacion-trafico'),
+        fetch('http://localhost:5000/api/simulacion-clima')
+      ]);
+
+      const trafico = await traficoRes.json();
+      const clima = await climaRes.json();
+
+      // Filtrar datos según el rango seleccionado
+      const ahora = new Date();
+      let fechaLimite;
+      
+      switch (selectedTimeRange) {
+        case 'today':
+          fechaLimite = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()).toISOString().split('T')[0];
+          break;
+        case 'week':
+          fechaLimite = new Date(ahora.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          break;
+        case 'month':
+          fechaLimite = new Date(ahora.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          break;
+        default:
+          fechaLimite = fechaInicio;
+      }
+
+      const traficoFiltrado = trafico.filter(item => {
+        const fechaItem = item.fecha ? item.fecha.split('T')[0] : new Date().toISOString().split('T')[0];
+        return selectedTimeRange === 'custom' ? 
+          (fechaItem >= fechaInicio && fechaItem <= fechaFin) :
+          fechaItem >= fechaLimite;
+      });
+
+      const climaFiltrado = clima.filter(item => {
+        const fechaItem = item.fecha ? item.fecha.split('T')[0] : new Date().toISOString().split('T')[0];
+        return selectedTimeRange === 'custom' ? 
+          (fechaItem >= fechaInicio && fechaItem <= fechaFin) :
+          fechaItem >= fechaLimite;
+      });
+
+      setDatosTrafico(traficoFiltrado);
+      setDatosClima(climaFiltrado);
+      
+      // Calcular métricas dinámicas
+      calcularMetricas(traficoFiltrado, climaFiltrado);
       setLastUpdate(new Date());
-      setIsLoading(false);
-    }, 1000);
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getRandomStatus = () => {
-    const statuses = ['normal', 'slow', 'fast', 'congested'];
-    return statuses[Math.floor(Math.random() * statuses.length)];
+  const calcularMetricas = (trafico, clima) => {
+    // Mapeo de categorías a tipos de vehículos
+    const categorias = trafico.reduce((acc, item) => {
+      acc[item.categoria] = (acc[item.categoria] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Calcular totales por tipo
+    const cars = (categorias.auto || 0) + (categorias.remolque || 0);
+    const trucks = (categorias.camiones2 || 0) + (categorias.camiones3 || 0);
+    const buses = (categorias.buses2 || 0) + (categorias.buses3 || 0);
+    const motorcycles = categorias.moto || 0;
+    const total = cars + trucks + buses + motorcycles;
+
+    // Calcular flujo por hora (promedio)
+    const diasEnRango = selectedTimeRange === 'today' ? 1 : 
+                      selectedTimeRange === 'week' ? 7 : 
+                      selectedTimeRange === 'month' ? 30 : 7;
+    const hourlyFlow = Math.round(total / (diasEnRango * 24));
+
+    // Calcular tendencia comparando con período anterior
+    const tendenciaPorcentaje = Math.random() * 20 - 10; // Simulado por ahora
+    
+    setVehicleData({
+      total,
+      cars,
+      trucks,
+      buses,
+      motorcycles,
+      hourlyFlow,
+      trend: tendenciaPorcentaje > 0 ? 'up' : 'down',
+      percentage: Math.abs(tendenciaPorcentaje).toFixed(1)
+    });
+
+    // Calcular datos por horas
+    calcularDatosHorarios(trafico);
+    
+    // Calcular datos por zonas (peajes)
+    calcularDatosPorZonas(trafico);
+    
+    // Calcular datos en tiempo real
+    calcularDatosEnTiempoReal(trafico, clima);
+  };
+
+  const calcularDatosHorarios = (trafico) => {
+    const horas = {};
+    
+    trafico.forEach(item => {
+      const hora = item.hora ? parseInt(item.hora.split(':')[0]) : 12;
+      const rangoHora = Math.floor(hora / 6) * 6; // Agrupar en rangos de 6 horas
+      horas[rangoHora] = (horas[rangoHora] || 0) + 1;
+    });
+
+    const horasFormateadas = [0, 6, 12, 18].map(h => {
+      const count = horas[h] || 0;
+      return {
+        hour: `${h.toString().padStart(2, '0')}:00`,
+        count,
+        peak: count > (Math.max(...Object.values(horas)) * 0.7)
+      };
+    });
+
+    setHourlyData(horasFormateadas);
+  };
+
+  const calcularDatosPorZonas = (trafico) => {
+    const peajes = [
+      'Peaje Angostura',
+      'Peaje Troncal Quinta', 
+      'Peaje Troncal Río Claro',
+      'Peaje Troncal Retiro',
+      'Peaje Troncal Santa Clara'
+    ];
+
+    const zonas = peajes.map((peaje, index) => {
+      const vehiculosEnPeaje = trafico.filter(item => item.peaje === peaje).length;
+      const capacidadBase = 1000 + (index * 500);
+      const percentage = Math.min(100, Math.round((vehiculosEnPeaje / capacidadBase) * 100));
+      
+      return {
+        id: index + 1,
+        name: peaje.replace('Peaje ', '').replace('Troncal ', ''),
+        vehicles: vehiculosEnPeaje,
+        capacity: capacidadBase,
+        percentage
+      };
+    });
+
+    setZones(zonas);
+  };
+
+  const calcularDatosEnTiempoReal = (trafico, clima) => {
+    const peajesUnicos = [...new Set(trafico.map(item => item.peaje))];
+    
+    const datosEnTiempoReal = peajesUnicos.slice(0, 6).map(peaje => {
+      const vehiculosEnPeaje = trafico.filter(item => item.peaje === peaje);
+      const flow = vehiculosEnPeaje.length;
+      
+      // Calcular velocidad promedio basada en el tipo de vehículos
+      const velocidadPromedio = vehiculosEnPeaje.reduce((acc, item) => {
+        const velocidadBase = item.categoria === 'moto' ? 45 :
+                             item.categoria === 'auto' ? 60 :
+                             item.categoria === 'remolque' ? 50 :
+                             item.categoria.includes('bus') ? 40 :
+                             item.categoria.includes('camion') ? 35 : 50;
+        return acc + velocidadBase;
+      }, 0) / (vehiculosEnPeaje.length || 1);
+
+      // Determinar estado basado en flujo y clima
+      const climaEnPeaje = clima.find(c => c.ubicacion === peaje);
+      let status = 'normal';
+      
+      if (flow > 15) status = 'congested';
+      else if (flow > 8) status = 'slow';
+      else if (velocidadPromedio > 55) status = 'fast';
+      
+      if (climaEnPeaje && ['Tormenta', 'Lluvia', 'Nieve'].includes(climaEnPeaje.tipoClima)) {
+        status = flow > 5 ? 'congested' : 'slow';
+      }
+
+      return {
+        street: peaje.replace('Peaje ', '').replace('Troncal ', ''),
+        flow,
+        speed: Math.round(velocidadPromedio),
+        status
+      };
+    });
+
+    setRealTimeData(datosEnTiempoReal);
   };
 
   const getStatusColor = (status) => {
@@ -155,18 +308,29 @@ const FlujoVehicular = ({ profileData, configData }) => {
     { type: 'motorcycles', label: 'Motocicletas', icon: Bike, count: vehicleData.motorcycles, color: '#EF4444' }
   ];
 
+  if (loading) {
+    return (
+      <div style={cardStyle}>
+        <div style={{ textAlign: 'center', padding: '3rem' }}>
+          <Activity size={48} color="#8B5CF6" style={{ margin: '0 auto 1rem', animation: 'spin 1s linear infinite' }} />
+          <p style={{ color: 'white', fontSize: '1.2rem' }}>Cargando datos de flujo vehicular...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Header con estadísticas principales */}
       <div style={cardStyle}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={titleStyle}>Flujo Vehicular</h1>
+            <h1 style={titleStyle}>🚗 Flujo Vehicular</h1>
             <p style={subtitleStyle}>
-              Monitoreo en tiempo real del tráfico vehicular
+              Monitoreo en tiempo real del tráfico vehicular - {datosTrafico.length} registros
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <select 
               value={selectedTimeRange} 
               onChange={(e) => setSelectedTimeRange(e.target.value)}
@@ -175,14 +339,34 @@ const FlujoVehicular = ({ profileData, configData }) => {
               <option value="today">Hoy</option>
               <option value="week">Esta semana</option>
               <option value="month">Este mes</option>
+              <option value="custom">Personalizado</option>
             </select>
+            
+            {selectedTimeRange === 'custom' && (
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <input
+                  type="date"
+                  value={fechaInicio}
+                  onChange={(e) => setFechaInicio(e.target.value)}
+                  style={{ ...selectStyle, width: '140px' }}
+                />
+                <span style={{ color: '#9ca3af' }}>a</span>
+                <input
+                  type="date"
+                  value={fechaFin}
+                  onChange={(e) => setFechaFin(e.target.value)}
+                  style={{ ...selectStyle, width: '140px' }}
+                />
+              </div>
+            )}
+            
             <button 
               style={buttonStyle} 
-              onClick={updateRealTimeData}
-              disabled={isLoading}
+              onClick={cargarDatos}
+              disabled={loading}
             >
-              <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-              {isLoading ? 'Actualizando...' : 'Actualizar'}
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              {loading ? 'Actualizando...' : 'Actualizar'}
             </button>
           </div>
         </div>
@@ -252,7 +436,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
 
       {/* Distribución por tipo de vehículo */}
       <div style={cardStyle}>
-        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>Distribución por Tipo de Vehículo</h2>
+        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>📊 Distribución por Tipo de Vehículo</h2>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -260,7 +444,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
         }}>
           {vehicleTypes.map((vehicle) => {
             const IconComponent = vehicle.icon;
-            const percentage = ((vehicle.count / vehicleData.total) * 100).toFixed(1);
+            const percentage = vehicleData.total > 0 ? ((vehicle.count / vehicleData.total) * 100).toFixed(1) : 0;
             
             return (
               <div key={vehicle.type} style={{
@@ -298,7 +482,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
 
       {/* Flujo por zonas */}
       <div style={cardStyle}>
-        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>Flujo por Zonas</h2>
+        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>🗺️ Flujo por Peajes</h2>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -326,7 +510,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
                 <span style={{ color: '#D1D5DB', fontWeight: '600' }}>{zone.vehicles.toLocaleString()}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span style={{ color: '#9CA3AF' }}>Capacidad:</span>
+                <span style={{ color: '#9CA3AF' }}>Capacidad est.:</span>
                 <span style={{ color: '#D1D5DB', fontWeight: '600' }}>{zone.capacity.toLocaleString()}</span>
               </div>
               <div style={{
@@ -337,7 +521,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
                 overflow: 'hidden'
               }}>
                 <div style={{
-                  width: `${zone.percentage}%`,
+                  width: `${Math.min(100, zone.percentage)}%`,
                   height: '100%',
                   backgroundColor: zone.percentage > 80 ? '#EF4444' : zone.percentage > 60 ? '#F59E0B' : '#22C55E',
                   transition: 'width 0.3s ease'
@@ -350,14 +534,14 @@ const FlujoVehicular = ({ profileData, configData }) => {
 
       {/* Monitoreo en tiempo real */}
       <div style={cardStyle}>
-        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>Monitoreo en Tiempo Real</h2>
+        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>⚡ Estado de Peajes en Tiempo Real</h2>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(75, 85, 99, 0.3)' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Vía</th>
-                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Flujo (veh/h)</th>
-                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Velocidad (km/h)</th>
+                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Peaje</th>
+                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Vehículos</th>
+                <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Vel. Promedio</th>
                 <th style={{ padding: '1rem', textAlign: 'left', color: '#D1D5DB', fontWeight: '600' }}>Estado</th>
               </tr>
             </thead>
@@ -366,7 +550,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
                 <tr key={index} style={{ borderBottom: '1px solid rgba(75, 85, 99, 0.2)' }}>
                   <td style={{ padding: '1rem', color: '#D1D5DB' }}>{item.street}</td>
                   <td style={{ padding: '1rem', color: '#D1D5DB', fontWeight: '600' }}>{item.flow}</td>
-                  <td style={{ padding: '1rem', color: '#D1D5DB', fontWeight: '600' }}>{item.speed}</td>
+                  <td style={{ padding: '1rem', color: '#D1D5DB', fontWeight: '600' }}>{item.speed} km/h</td>
                   <td style={{ padding: '1rem' }}>
                     <span style={{
                       padding: '0.25rem 0.75rem',
@@ -385,20 +569,27 @@ const FlujoVehicular = ({ profileData, configData }) => {
             </tbody>
           </table>
         </div>
+        
+        {realTimeData.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#9CA3AF' }}>
+            No hay datos disponibles para el período seleccionado
+          </div>
+        )}
       </div>
 
       {/* Gráfico de flujo por horas */}
       <div style={cardStyle}>
-        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>Flujo por Horas</h2>
+        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>📈 Distribución de Flujo por Horarios</h2>
         <div style={{
           display: 'flex',
           alignItems: 'end',
           gap: '1rem',
           height: '200px',
-          marginTop: '2rem'
+          marginTop: '2rem',
+          justifyContent: 'center'
         }}>
           {hourlyData.map((item, index) => {
-            const maxCount = Math.max(...hourlyData.map(d => d.count));
+            const maxCount = Math.max(...hourlyData.map(d => d.count), 1);
             const height = (item.count / maxCount) * 150;
             
             return (
@@ -406,27 +597,45 @@ const FlujoVehicular = ({ profileData, configData }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                flex: 1
+                flex: 1,
+                maxWidth: '100px'
               }}>
                 <div style={{
-                  width: '40px',
-                  height: `${height}px`,
+                  width: '60px',
+                  height: `${Math.max(height, 10)}px`,
                   backgroundColor: item.peak ? '#A855F7' : '#6B7280',
                   borderRadius: '4px',
                   marginBottom: '0.5rem',
                   transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }} />
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}>
+                  {item.peak && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-8px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      fontSize: '12px'
+                    }}>⭐</div>
+                  )}
+                </div>
                 <div style={{ color: '#9CA3AF', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
                   {item.hour}
                 </div>
                 <div style={{ color: '#D1D5DB', fontSize: '0.875rem', fontWeight: '600' }}>
-                  {item.count.toLocaleString()}
+                  {item.count}
                 </div>
               </div>
             );
           })}
         </div>
+        
+        {hourlyData.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#9CA3AF' }}>
+            No hay suficientes datos para mostrar la distribución horaria
+          </div>
+        )}
       </div>
     </div>
   );
