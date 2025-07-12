@@ -1,4 +1,3 @@
-//register.jsx
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, Building, User, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -14,11 +13,11 @@ const Register = ({ onNavigateToLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const backgrounds = [
-    'Vista/imagenes/fondo1.png',
-    'Vista/imagenes/fondo2.png',
-    'Vista/imagenes/fondo3.png',
-    'Vista/imagenes/fondo4.png',
-    'Vista/imagenes/fondo5.png'
+    'Vista/Imagenes/fondo1.png',
+    'Vista/Imagenes/fondo2.png',
+    'Vista/Imagenes/fondo3.png',
+    'Vista/Imagenes/fondo4.png',
+    'Vista/Imagenes/fondo5.png'
   ];
 
   useEffect(() => {
@@ -37,36 +36,35 @@ const Register = ({ onNavigateToLogin }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const response = await fetch('http://localhost:5000/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch('http://localhost:5000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (response.ok) {
-      console.log('Usuario registrado exitosamente');
-      // Aquí puedes redirigir al usuario a otra página o mostrar un mensaje de éxito
-      alert('Usuario registrado exitosamente');
-      // Redirigir al login
-      window.location.href = '/login';
-    } else {
-      console.error('Error al registrar el usuario');
-      alert('Error al registrar el usuario');
+      if (response.ok) {
+        console.log('Usuario registrado exitosamente');
+        alert('Usuario registrado exitosamente');
+        // Redirigir al login
+        window.location.href = '/login';
+      } else {
+        const errorData = await response.json();
+        console.error('Error al registrar el usuario:', errorData);
+        alert('Error al registrar el usuario: ' + errorData.error);
+      }
+    } catch (error) {
+      console.error('Error en el registro:', error);
+      alert('Error en el registro: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error('Error en el registro:', error);
-    alert('Error en el registro');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   const containerStyle = {
     minHeight: '100vh',
@@ -75,8 +73,8 @@ const Register = ({ onNavigateToLogin }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '2rem 0',
-    fontFamily: 'Arial, sans-serif'
+    fontFamily: 'Arial, sans-serif',
+    padding: '1rem'
   };
 
   const backgroundStyle = (index) => ({
@@ -106,7 +104,6 @@ const Register = ({ onNavigateToLogin }) => {
     zIndex: 10,
     width: '100%',
     maxWidth: '28rem',
-    margin: '0 1rem',
     backgroundColor: 'rgba(17, 24, 39, 0.95)',
     backdropFilter: 'blur(10px)',
     borderRadius: '1rem',
@@ -177,16 +174,6 @@ const Register = ({ onNavigateToLogin }) => {
     outline: 'none',
     transition: 'all 0.2s ease',
     boxSizing: 'border-box'
-  };
-
-  const selectStyle = {
-    ...inputStyle,
-    appearance: 'none',
-    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-    backgroundPosition: 'right 0.5rem center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '1.5em 1.5em',
-    paddingRight: '2.5rem'
   };
 
   const passwordButtonStyle = {
@@ -297,16 +284,52 @@ const Register = ({ onNavigateToLogin }) => {
     borderRadius: '50%',
     animation: 'spin 1s linear infinite'
   };
-return (
+
+  return (
     <div style={containerStyle}>
-      {/* Estilos y JSX del componente... */}
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        input:focus {
+          border-color: #8B5CF6 !important;
+          box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+        }
+        button:hover {
+          transform: translateY(-1px);
+        }
+        .secondary-button:hover {
+          background-color: #8B5CF6 !important;
+          color: white !important;
+        }
+        .link:hover {
+          color: #C084FC !important;
+        }
+        .password-btn:hover {
+          color: #A855F7 !important;
+        }
+      `}</style>
+      
+      {/* Fondos rotativos */}
+      {backgrounds.map((bg, index) => (
+        <div key={index} style={backgroundStyle(index)} />
+      ))}
+      
+      {/* Overlay oscuro */}
+      <div style={overlayStyle} />
+      
+      {/* Tarjeta de registro */}
       <div style={cardStyle}>
+        {/* Header */}
         <div style={headerStyle}>
-          <h1 style={titleStyle}>Crear Cuenta</h1>
+          <h1 style={titleStyle}>🚗 Crear Cuenta</h1>
           <p style={subtitleStyle}>Únete al sistema de predicción de carreteras</p>
         </div>
-        <form style={formStyle} onSubmit={handleSubmit}>
-          {/* Campos del formulario */}
+        
+        {/* Formulario */}
+        <div style={formStyle}>
+          {/* Email */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Correo Electrónico</label>
             <div style={inputContainerStyle}>
@@ -322,6 +345,8 @@ return (
               />
             </div>
           </div>
+          
+          {/* Contraseña */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Contraseña</label>
             <div style={inputContainerStyle}>
@@ -345,6 +370,8 @@ return (
               </button>
             </div>
           </div>
+          
+          {/* Nombre de la empresa */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Nombre de la Empresa</label>
             <div style={inputContainerStyle}>
@@ -360,6 +387,8 @@ return (
               />
             </div>
           </div>
+          
+          {/* Cargo del usuario */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Cargo del Usuario</label>
             <div style={inputContainerStyle}>
@@ -370,11 +399,13 @@ return (
                 value={formData.userPosition}
                 onChange={handleInputChange}
                 style={inputStyle}
-                placeholder="Cargo del Usuario"
+                placeholder="Ej: Ingeniero Civil, Jefe de Proyecto"
                 required
               />
             </div>
           </div>
+          
+          {/* Términos y condiciones */}
           <div style={checkboxContainerStyle}>
             <input
               type="checkbox"
@@ -389,8 +420,11 @@ return (
               <span style={linkStyle} className="link">política de privacidad</span>
             </label>
           </div>
+          
+          {/* Botón de registro */}
           <button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             disabled={isLoading}
             style={{
               ...buttonStyle,
@@ -407,8 +441,29 @@ return (
               </>
             )}
           </button>
-        </form>
-        {/* Resto del JSX del componente... */}
+        </div>
+        
+        {/* Divisor */}
+        <div style={dividerStyle}>
+          <div style={dividerLineStyle}></div>
+          <span style={dividerTextStyle}>O</span>
+          <div style={dividerLineStyle}></div>
+        </div>
+        
+        {/* Ya tienes cuenta */}
+        <div style={{textAlign: 'center'}}>
+          <p style={{...footerTextStyle, marginBottom: '1rem'}}>
+            ¿Ya tienes una cuenta?
+          </p>
+          <button
+            onClick={() => window.location.href = '/login'}
+            style={secondaryButtonStyle}
+            className="secondary-button"
+          >
+            <ArrowLeft size={20} />
+            Iniciar Sesión
+          </button>
+        </div>
       </div>
     </div>
   );

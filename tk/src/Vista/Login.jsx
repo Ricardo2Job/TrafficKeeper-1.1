@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const Login = () => {
@@ -10,14 +9,13 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const backgrounds = [
-    'Vista/imagenes/fondo1.png',
-    'Vista/imagenes/fondo2.png',
-    'Vista/imagenes/fondo3.png',
-    'Vista/imagenes/fondo4.png',
-    'Vista/imagenes/fondo5.png'
+    'Vista/Imagenes/fondo1.png',
+    'Vista/Imagenes/fondo2.png',
+    'Vista/Imagenes/fondo3.png',
+    'Vista/Imagenes/fondo4.png',
+    'Vista/Imagenes/fondo5.png'
   ];
 
   useEffect(() => {
@@ -55,12 +53,8 @@ const Login = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         
-        // Opcional: también puedes guardar en sessionStorage si prefieres que expire al cerrar el navegador
-        // sessionStorage.setItem('token', data.token);
-        // sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
-        
         alert('Login exitoso');
-        navigate('/dashboard'); // Redirigir al dashboard
+        window.location.href = '/dashboard'; // Redirigir al dashboard
       } else {
         const errorData = await response.json();
         console.error('Credenciales incorrectas:', errorData);
@@ -81,7 +75,8 @@ const Login = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontFamily: 'Arial, sans-serif'
+    fontFamily: 'Arial, sans-serif',
+    padding: '1rem'
   };
 
   const backgroundStyle = (index) => ({
@@ -111,7 +106,6 @@ const Login = () => {
     zIndex: 10,
     width: '100%',
     maxWidth: '28rem',
-    margin: '0 1rem',
     backgroundColor: 'rgba(17, 24, 39, 0.95)',
     backdropFilter: 'blur(10px)',
     borderRadius: '1rem',
@@ -260,11 +254,6 @@ const Login = () => {
     fontSize: '0.875rem'
   };
 
-  const footerStyle = {
-    textAlign: 'center',
-    marginTop: '2rem'
-  };
-
   const footerTextStyle = {
     color: '#9CA3AF',
     fontSize: '0.875rem'
@@ -304,21 +293,25 @@ const Login = () => {
           color: #A855F7 !important;
         }
       `}</style>
+      
       {/* Fondos rotativos */}
       {backgrounds.map((bg, index) => (
         <div key={index} style={backgroundStyle(index)} />
       ))}
+      
       {/* Overlay oscuro */}
       <div style={overlayStyle} />
+      
       {/* Tarjeta de login */}
       <div style={cardStyle}>
         {/* Header */}
         <div style={headerStyle}>
-          <h1 style={titleStyle}>Bienvenido</h1>
+          <h1 style={titleStyle}>🚗 Bienvenido</h1>
           <p style={subtitleStyle}>Ingresa a tu cuenta para continuar</p>
         </div>
+        
         {/* Formulario */}
-        <form style={formStyle} onSubmit={handleSubmit}>
+        <div style={formStyle}>
           {/* Email */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Correo Electrónico</label>
@@ -335,6 +328,7 @@ const Login = () => {
               />
             </div>
           </div>
+          
           {/* Contraseña */}
           <div style={fieldStyle}>
             <label style={labelStyle}>Contraseña</label>
@@ -359,6 +353,7 @@ const Login = () => {
               </button>
             </div>
           </div>
+          
           {/* Olvidé mi contraseña */}
           <div style={forgotPasswordStyle}>
             <button
@@ -369,9 +364,11 @@ const Login = () => {
               ¿Olvidaste tu contraseña?
             </button>
           </div>
+          
           {/* Botón de login */}
           <button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             disabled={isLoading}
             style={{
               ...buttonStyle,
@@ -388,13 +385,15 @@ const Login = () => {
               </>
             )}
           </button>
-        </form>
+        </div>
+        
         {/* Divisor */}
         <div style={dividerStyle}>
           <div style={dividerLineStyle}></div>
           <span style={dividerTextStyle}>O</span>
           <div style={dividerLineStyle}></div>
         </div>
+        
         {/* Registro */}
         <div style={{textAlign: 'center'}}>
           <p style={{...footerTextStyle, marginBottom: '1rem'}}>
@@ -408,12 +407,6 @@ const Login = () => {
             Crear Cuenta
           </button>
         </div>
-      </div>
-      {/* Footer */}
-      <div style={footerStyle}>
-        <p style={footerTextStyle}>
-          Sistema de Predicción de Carreteras
-        </p>
       </div>
     </div>
   );
