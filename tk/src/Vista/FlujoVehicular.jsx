@@ -26,17 +26,12 @@ const FlujoVehicular = ({ profileData, configData }) => {
   const [zones, setZones] = useState([]);
   const [realTimeData, setRealTimeData] = useState([]);
 
+  // Solo cargar datos cuando cambien las fechas o el rango de tiempo
   useEffect(() => {
     cargarDatos();
   }, [fechaInicio, fechaFin, selectedTimeRange]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      cargarDatos();
-    }, 30000); // Actualizar cada 30 segundos
-
-    return () => clearInterval(interval);
-  }, [fechaInicio, fechaFin]);
+  // ELIMINADO: El useEffect que actualizaba automáticamente cada 30 segundos
 
   const cargarDatos = async () => {
     try {
@@ -327,7 +322,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
           <div>
             <h1 style={titleStyle}>🚗 Flujo Vehicular</h1>
             <p style={subtitleStyle}>
-              Monitoreo en tiempo real del tráfico vehicular - {datosTrafico.length} registros
+              Monitoreo del tráfico vehicular - {datosTrafico.length} registros
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -534,7 +529,7 @@ const FlujoVehicular = ({ profileData, configData }) => {
 
       {/* Monitoreo en tiempo real */}
       <div style={cardStyle}>
-        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>⚡ Estado de Peajes en Tiempo Real</h2>
+        <h2 style={{ ...titleStyle, fontSize: '1.5rem' }}>⚡ Estado de Peajes</h2>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>

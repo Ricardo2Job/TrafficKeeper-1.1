@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, AlertTriangle, BarChart3, Car, Database, Cloud, Truck, Calendar, MapPin, Clock, Thermometer, Wind, Eye, Sun, Droplets, Gauge, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Map, AlertTriangle, BarChart3, Car, Database, Cloud, Truck, Calendar, MapPin, Clock, Thermometer, Wind, Eye, Sun, Droplets, Gauge, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, FileDown, FileText } from 'lucide-react';
 
 const Inicio = ({ profileData, configData }) => {
   const [datosTrafico, setDatosTrafico] = useState([]);
@@ -8,7 +8,7 @@ const Inicio = ({ profileData, configData }) => {
   const [cargandoClima, setCargandoClima] = useState(true);
   const [error, setError] = useState('');
   const [filtroActivo, setFiltroActivo] = useState('todos');
-  
+
   // Estados para paginación
   const [paginaTrafico, setPaginaTrafico] = useState(1);
   const [paginaClima, setPaginaClima] = useState(1);
@@ -39,6 +39,21 @@ const Inicio = ({ profileData, configData }) => {
 
   const buttonStyle = {
     background: 'linear-gradient(90deg, #8B5CF6, #7C3AED)',
+    color: 'white',
+    fontWeight: '600',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '0.5rem',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    margin: '0.25rem'
+  };
+
+  const exportButtonStyle = {
+    background: 'linear-gradient(90deg, #059669, #047857)',
     color: 'white',
     fontWeight: '600',
     padding: '0.75rem 1.5rem',
@@ -97,7 +112,6 @@ const Inicio = ({ profileData, configData }) => {
     fontSize: '0.875rem'
   };
 
-  // Función para obtener datos de tráfico
   const obtenerDatosTrafico = async () => {
     try {
       setCargandoTrafico(true);
@@ -107,7 +121,7 @@ const Inicio = ({ profileData, configData }) => {
       }
       const datos = await response.json();
       setDatosTrafico(datos);
-      setPaginaTrafico(1); // Reset pagination
+      setPaginaTrafico(1);
     } catch (err) {
       setError('Error al cargar datos de tráfico: ' + err.message);
       console.error('Error:', err);
@@ -116,7 +130,6 @@ const Inicio = ({ profileData, configData }) => {
     }
   };
 
-  // Función para obtener datos de clima
   const obtenerDatosClima = async () => {
     try {
       setCargandoClima(true);
@@ -126,7 +139,7 @@ const Inicio = ({ profileData, configData }) => {
       }
       const datos = await response.json();
       setDatosClima(datos);
-      setPaginaClima(1); // Reset pagination
+      setPaginaClima(1);
     } catch (err) {
       setError('Error al cargar datos de clima: ' + err.message);
       console.error('Error:', err);
@@ -135,32 +148,152 @@ const Inicio = ({ profileData, configData }) => {
     }
   };
 
-  // Cargar datos al montar el componente
+  const exportarDatosTrafico = () => {
+    if (datosTrafico.length === 0) {
+      alert('No hay datos de tráfico para exportar');
+      return;
+    }
+    const datosJSON = JSON.stringify(datosTrafico, null, 2);
+    const blob = new Blob([datosJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `datos_trafico_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportarDatosClima = () => {
+    if (datosClima.length === 0) {
+      alert('No hay datos de clima para exportar');
+      return;
+    }
+    const datosJSON = JSON.stringify(datosClima, null, 2);
+    const blob = new Blob([datosJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `datos_clima_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportarTodosLosDatos = () => {
+    if (datosTrafico.length === 0 && datosClima.length === 0) {
+      alert('No hay datos para exportar');
+      return;
+    }
+    const datosCompletos = {
+      fechaExportacion: new Date().toISOString(),
+      resumen: {
+        totalRegistrosTrafico: datosTrafico.length,
+        totalRegistrosClima: datosClima.length,
+        totalRegistros: datosTrafico.length + datosClima.length
+      },
+      datosTrafico: datosTrafico,
+      datosClima: datosClima
+    };
+    const datosJSON = JSON.stringify(datosCompletos, null, 2);
+    const blob = new Blob([datosJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `datos_completos_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportarCSVTrafico = () => {
+    if (datosTrafico.length === 0) {
+      alert('No hay datos de tráfico para exportar');
+      return;
+    }
+    const headers = ['Fecha', 'Hora', 'Tipo Vehículo', 'Categoría', 'Peaje', 'Ubicación KM', 'Ejes', 'Peso', 'Tarifa', 'Sentido'];
+    const csvContent = [
+      headers.join(','),
+      ...datosTrafico.map(row => [
+        row.fecha,
+        row.hora,
+        `"${row.tipoVehiculo}"`,
+        row.categoria,
+        `"${row.peaje}"`,
+        row.ubicacionKm,
+        row.ejes || 'N/A',
+        row.pesoPromedio,
+        row.tarifa,
+        row.sentido
+      ].join(','))
+    ].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `datos_trafico_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportarCSVClima = () => {
+    if (datosClima.length === 0) {
+      alert('No hay datos de clima para exportar');
+      return;
+    }
+    const headers = ['Fecha', 'Tipo Clima', 'Intensidad', 'Ubicación', 'KM', 'Temperatura', 'Humedad', 'Viento Velocidad', 'Viento Dirección', 'Desgaste', 'Eventos'];
+    const csvContent = [
+      headers.join(','),
+      ...datosClima.map(row => [
+        row.fecha,
+        row.tipoClima,
+        row.intensidad,
+        `"${row.ubicacion}"`,
+        row.ubicacionKm,
+        row.temperatura,
+        row.humedad,
+        row.viento?.velocidad || '',
+        `"${row.viento?.direccion || ''}"`,
+        row.desgasteEstimado,
+        `"${row.eventosCatastroficos}"`
+      ].join(','))
+    ].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `datos_clima_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
     obtenerDatosTrafico();
     obtenerDatosClima();
   }, []);
 
-  // Funciones de paginación
   const calcularPaginasTrafico = () => Math.ceil(datosTrafico.length / registrosPorPagina);
   const calcularPaginasClima = () => Math.ceil(datosClima.length / registrosPorPagina);
-
   const obtenerDatosTraficoActual = () => {
     const inicio = (paginaTrafico - 1) * registrosPorPagina;
     const fin = inicio + registrosPorPagina;
     return datosTrafico.slice(inicio, fin);
   };
-
   const obtenerDatosClimaActual = () => {
     const inicio = (paginaClima - 1) * registrosPorPagina;
     const fin = inicio + registrosPorPagina;
     return datosClima.slice(inicio, fin);
   };
-
   const cambiarPaginaTrafico = (nuevaPagina) => {
     setPaginaTrafico(Math.max(1, Math.min(nuevaPagina, calcularPaginasTrafico())));
   };
-
   const cambiarPaginaClima = (nuevaPagina) => {
     setPaginaClima(Math.max(1, Math.min(nuevaPagina, calcularPaginasClima())));
   };
@@ -168,8 +301,7 @@ const Inicio = ({ profileData, configData }) => {
   const generarBotonesPaginacion = (paginaActual, totalPaginas, cambiarPagina) => {
     const botones = [];
     const maxBotones = 5;
-    
-    // Primera página
+
     botones.push(
       <button
         key="first"
@@ -185,7 +317,6 @@ const Inicio = ({ profileData, configData }) => {
       </button>
     );
 
-    // Página anterior
     botones.push(
       <button
         key="prev"
@@ -201,14 +332,12 @@ const Inicio = ({ profileData, configData }) => {
       </button>
     );
 
-    // Páginas numeradas
     let inicioRango = Math.max(1, paginaActual - Math.floor(maxBotones / 2));
     let finRango = Math.min(totalPaginas, inicioRango + maxBotones - 1);
-    
+
     if (finRango - inicioRango < maxBotones - 1) {
       inicioRango = Math.max(1, finRango - maxBotones + 1);
     }
-
     for (let i = inicioRango; i <= finRango; i++) {
       botones.push(
         <button
@@ -221,7 +350,6 @@ const Inicio = ({ profileData, configData }) => {
       );
     }
 
-    // Página siguiente
     botones.push(
       <button
         key="next"
@@ -237,7 +365,6 @@ const Inicio = ({ profileData, configData }) => {
       </button>
     );
 
-    // Última página
     botones.push(
       <button
         key="last"
@@ -252,33 +379,31 @@ const Inicio = ({ profileData, configData }) => {
         <ChevronsRight size={16} />
       </button>
     );
-
     return botones;
   };
 
-  // Estadísticas calculadas
   const stats = [
-    { 
-      label: 'Carreteras Monitoreadas', 
-      value: 'Ruta 5 Sur', 
+    {
+      label: 'Carreteras Monitoreadas',
+      value: 'Ruta 5 Sur',
       icon: Map,
       color: '#8B5CF6'
     },
-    { 
-      label: 'Registros de Tráfico', 
-      value: datosTrafico.length.toString(), 
+    {
+      label: 'Registros de Tráfico',
+      value: datosTrafico.length.toString(),
       icon: Car,
       color: '#06B6D4'
     },
-    { 
-      label: 'Registros de Clima', 
-      value: datosClima.length.toString(), 
+    {
+      label: 'Registros de Clima',
+      value: datosClima.length.toString(),
       icon: Cloud,
       color: '#10B981'
     },
-    { 
-      label: 'Alertas Activas', 
-      value: '12', 
+    {
+      label: 'Alertas Activas',
+      value: '12',
       icon: AlertTriangle,
       color: '#F59E0B'
     }
@@ -321,14 +446,12 @@ const Inicio = ({ profileData, configData }) => {
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1F2937 0%, #111827 100%)', padding: '2rem' }}>
-      {/* Header */}
       <div style={cardStyle}>
         <h1 style={titleStyle}>🚗 Sistema de Predicción de Carreteras</h1>
         <p style={subtitleStyle}>
           Panel de control para monitoreo de sedimentación y estado de carreteras
         </p>
-        
-        {/* Estadísticas */}
+
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -372,7 +495,6 @@ const Inicio = ({ profileData, configData }) => {
           })}
         </div>
 
-        {/* Botones de acción */}
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button
             style={buttonStyle}
@@ -402,16 +524,137 @@ const Inicio = ({ profileData, configData }) => {
         </div>
       </div>
 
-      {/* Sección de Datos Históricos */}
+      <div style={cardStyle}>
+        <h2 style={{ ...titleStyle, fontSize: '1.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Download size={28} color="#059669" />
+          📥 Exportar Datos
+        </h2>
+        <p style={subtitleStyle}>
+          Descarga los datos en diferentes formatos para análisis externos
+        </p>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '1.5rem',
+          marginBottom: '2rem'
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(17, 24, 39, 0.6)',
+            borderRadius: '0.75rem',
+            padding: '1.5rem',
+            border: '1px solid rgba(75, 85, 99, 0.3)'
+          }}>
+            <h3 style={{ color: '#A855F7', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText size={20} />
+              Formato JSON
+            </h3>
+            <p style={{ color: '#9CA3AF', fontSize: '0.875rem', marginBottom: '1rem' }}>
+              Exporta los datos en formato JSON para integración con otras aplicaciones
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <button
+                style={exportButtonStyle}
+                onClick={exportarDatosTrafico}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                disabled={datosTrafico.length === 0}
+              >
+                <Car size={16} />
+                Exportar Tráfico JSON ({datosTrafico.length} registros)
+              </button>
+              <button
+                style={exportButtonStyle}
+                onClick={exportarDatosClima}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                disabled={datosClima.length === 0}
+              >
+                <Cloud size={16} />
+                Exportar Clima JSON ({datosClima.length} registros)
+              </button>
+              <button
+                style={{
+                  ...exportButtonStyle,
+                  background: 'linear-gradient(90deg, #8B5CF6, #7C3AED)'
+                }}
+                onClick={exportarTodosLosDatos}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                disabled={datosTrafico.length === 0 && datosClima.length === 0}
+              >
+                <Database size={16} />
+                Exportar Todo JSON ({datosTrafico.length + datosClima.length} registros)
+              </button>
+            </div>
+          </div>
+
+          <div style={{
+            backgroundColor: 'rgba(17, 24, 39, 0.6)',
+            borderRadius: '0.75rem',
+            padding: '1.5rem',
+            border: '1px solid rgba(75, 85, 99, 0.3)'
+          }}>
+            <h3 style={{ color: '#10B981', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileDown size={20} />
+              Formato CSV
+            </h3>
+            <p style={{ color: '#9CA3AF', fontSize: '0.875rem', marginBottom: '1rem' }}>
+              Exporta los datos en formato CSV para análisis en Excel o herramientas estadísticas
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <button
+                style={{
+                  ...exportButtonStyle,
+                  background: 'linear-gradient(90deg, #10B981, #047857)'
+                }}
+                onClick={exportarCSVTrafico}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                disabled={datosTrafico.length === 0}
+              >
+                <Car size={16} />
+                Exportar Tráfico CSV
+              </button>
+              <button
+                style={{
+                  ...exportButtonStyle,
+                  background: 'linear-gradient(90deg, #10B981, #047857)'
+                }}
+                onClick={exportarCSVClima}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                disabled={datosClima.length === 0}
+              >
+                <Cloud size={16} />
+                Exportar Clima CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderRadius: '0.75rem',
+          padding: '1rem',
+          border: '1px solid rgba(59, 130, 246, 0.3)',
+          marginTop: '1rem'
+        }}>
+          <div style={{ color: '#60A5FA', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Database size={16} />
+            <strong>Información:</strong> Los archivos se descargarán automáticamente con nombres únicos basados en la fecha actual.
+            Los datos exportados incluyen toda la información disponible en las tablas.
+          </div>
+        </div>
+      </div>
+
       <div style={cardStyle}>
         <h2 style={{ ...titleStyle, fontSize: '1.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Database size={28} color="#A855F7" />
           📊 Datos Históricos
         </h2>
-        
-        {/* Controles de paginación global */}
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-          {/* Filtros */}
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <button
               style={{
@@ -444,7 +687,6 @@ const Inicio = ({ profileData, configData }) => {
             </button>
           </div>
 
-          {/* Selector de registros por página */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ color: '#D1D5DB', fontSize: '0.875rem' }}>Mostrar:</span>
             <select
@@ -485,14 +727,13 @@ const Inicio = ({ profileData, configData }) => {
           </div>
         )}
 
-        {/* Tabla de Datos de Tráfico */}
         {(filtroActivo === 'todos' || filtroActivo === 'trafico') && (
           <div style={{ marginBottom: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ 
-                color: '#06B6D4', 
-                fontSize: '1.25rem', 
-                fontWeight: '600', 
+              <h3 style={{
+                color: '#06B6D4',
+                fontSize: '1.25rem',
+                fontWeight: '600',
                 margin: 0,
                 display: 'flex',
                 alignItems: 'center',
@@ -501,7 +742,7 @@ const Inicio = ({ profileData, configData }) => {
                 <Truck size={20} />
                 🚛 Registros de Tráfico ({datosTrafico.length})
               </h3>
-              
+
               {datosTrafico.length > 0 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ color: '#9CA3AF', fontSize: '0.875rem' }}>
@@ -510,7 +751,7 @@ const Inicio = ({ profileData, configData }) => {
                 </div>
               )}
             </div>
-            
+
             {cargandoTrafico ? (
               <div style={{ textAlign: 'center', padding: '2rem', color: '#9CA3AF' }}>
                 <div style={{
@@ -526,7 +767,7 @@ const Inicio = ({ profileData, configData }) => {
               </div>
             ) : (
               <>
-                <div style={{ 
+                <div style={{
                   overflowX: 'auto',
                   backgroundColor: 'rgba(17, 24, 39, 0.6)',
                   borderRadius: '0.75rem',
@@ -576,14 +817,12 @@ const Inicio = ({ profileData, configData }) => {
                     </tbody>
                   </table>
                 </div>
-
-                {/* Paginación de Tráfico */}
                 {calcularPaginasTrafico() > 1 && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    gap: '0.5rem', 
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '0.5rem',
                     marginTop: '1rem',
                     padding: '1rem',
                     flexWrap: 'wrap'
@@ -591,12 +830,10 @@ const Inicio = ({ profileData, configData }) => {
                     {generarBotonesPaginacion(paginaTrafico, calcularPaginasTrafico(), cambiarPaginaTrafico)}
                   </div>
                 )}
-
-                {/* Info de registros */}
-                <div style={{ 
-                  padding: '1rem', 
-                  textAlign: 'center', 
-                  color: '#9CA3AF', 
+                <div style={{
+                  padding: '1rem',
+                  textAlign: 'center',
+                  color: '#9CA3AF',
                   backgroundColor: 'rgba(17, 24, 39, 0.3)',
                   fontSize: '0.875rem'
                 }}>
@@ -607,14 +844,13 @@ const Inicio = ({ profileData, configData }) => {
           </div>
         )}
 
-        {/* Tabla de Datos de Clima */}
         {(filtroActivo === 'todos' || filtroActivo === 'clima') && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ 
-                color: '#10B981', 
-                fontSize: '1.25rem', 
-                fontWeight: '600', 
+              <h3 style={{
+                color: '#10B981',
+                fontSize: '1.25rem',
+                fontWeight: '600',
                 margin: 0,
                 display: 'flex',
                 alignItems: 'center',
@@ -623,7 +859,7 @@ const Inicio = ({ profileData, configData }) => {
                 <Cloud size={20} />
                 🌤️ Registros de Clima ({datosClima.length})
               </h3>
-              
+
               {datosClima.length > 0 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ color: '#9CA3AF', fontSize: '0.875rem' }}>
@@ -632,7 +868,7 @@ const Inicio = ({ profileData, configData }) => {
                 </div>
               )}
             </div>
-            
+
             {cargandoClima ? (
               <div style={{ textAlign: 'center', padding: '2rem', color: '#9CA3AF' }}>
                 <div style={{
@@ -648,7 +884,7 @@ const Inicio = ({ profileData, configData }) => {
               </div>
             ) : (
               <>
-                <div style={{ 
+                <div style={{
                   overflowX: 'auto',
                   backgroundColor: 'rgba(17, 24, 39, 0.6)',
                   borderRadius: '0.75rem',
@@ -713,11 +949,11 @@ const Inicio = ({ profileData, configData }) => {
                           </td>
                           <td style={tdStyle}>
                             <span style={{
-                              backgroundColor: registro.desgasteEstimado > 7 ? 'rgba(239, 68, 68, 0.2)' : 
-                                             registro.desgasteEstimado > 4 ? 'rgba(245, 158, 11, 0.2)' : 
+                              backgroundColor: registro.desgasteEstimado > 7 ? 'rgba(239, 68, 68, 0.2)' :
+                                             registro.desgasteEstimado > 4 ? 'rgba(245, 158, 11, 0.2)' :
                                              'rgba(16, 185, 129, 0.2)',
-                              color: registro.desgasteEstimado > 7 ? '#EF4444' : 
-                                     registro.desgasteEstimado > 4 ? '#F59E0B' : 
+                              color: registro.desgasteEstimado > 7 ? '#EF4444' :
+                                     registro.desgasteEstimado > 4 ? '#F59E0B' :
                                      '#10B981',
                               padding: '0.25rem 0.5rem',
                               borderRadius: '0.25rem',
@@ -733,14 +969,12 @@ const Inicio = ({ profileData, configData }) => {
                     </tbody>
                   </table>
                 </div>
-
-                {/* Paginación de Clima */}
                 {calcularPaginasClima() > 1 && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    gap: '0.5rem', 
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '0.5rem',
                     marginTop: '1rem',
                     padding: '1rem',
                     flexWrap: 'wrap'
@@ -748,12 +982,10 @@ const Inicio = ({ profileData, configData }) => {
                     {generarBotonesPaginacion(paginaClima, calcularPaginasClima(), cambiarPaginaClima)}
                   </div>
                 )}
-
-                {/* Info de registros */}
-                <div style={{ 
-                  padding: '1rem', 
-                  textAlign: 'center', 
-                  color: '#9CA3AF', 
+                <div style={{
+                  padding: '1rem',
+                  textAlign: 'center',
+                  color: '#9CA3AF',
                   backgroundColor: 'rgba(17, 24, 39, 0.3)',
                   fontSize: '0.875rem'
                 }}>
@@ -764,7 +996,6 @@ const Inicio = ({ profileData, configData }) => {
           </div>
         )}
 
-        {/* Mensaje si no hay datos */}
         {!cargandoTrafico && !cargandoClima && datosTrafico.length === 0 && datosClima.length === 0 && (
           <div style={{
             textAlign: 'center',
@@ -790,7 +1021,6 @@ const Inicio = ({ profileData, configData }) => {
         )}
       </div>
 
-      {/* Estilos CSS para animaciones */}
       <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
@@ -805,6 +1035,10 @@ const Inicio = ({ profileData, configData }) => {
         }
         button:disabled:hover {
           transform: none !important;
+        }
+        button:disabled {
+          opacity: 0.5 !important;
+          cursor: not-allowed !important;
         }
       `}</style>
     </div>

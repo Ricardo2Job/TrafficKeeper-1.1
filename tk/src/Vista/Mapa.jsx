@@ -967,19 +967,6 @@ const Mapa = ({ profileData, configData }) => {
             </div>
           </div>
 
-          {/* Brújula */}
-          <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', backgroundColor: 'rgba(31, 41, 55, 0.95)', borderRadius: '0.5rem', padding: '0.5rem', fontSize: '0.75rem', border: '1px solid rgba(75, 85, 99, 0.3)' }}>
-            <div style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-              🧭 N
-            </div>
-            <div style={{ color: '#9ca3af', textAlign: 'center' }}>
-              ← O &nbsp;&nbsp;&nbsp; E →
-            </div>
-            <div style={{ color: '#9ca3af', textAlign: 'center' }}>
-              S
-            </div>
-          </div>
-
           {/* Instrucciones de uso */}
           <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', backgroundColor: 'rgba(31, 41, 55, 0.95)', borderRadius: '0.5rem', padding: '0.5rem', fontSize: '0.75rem', maxWidth: '200px', border: '1px solid rgba(75, 85, 99, 0.3)' }}>
             <div style={{ color: '#8B5CF6', fontWeight: 'bold', marginBottom: '0.25rem' }}>💡 Interacción:</div>
